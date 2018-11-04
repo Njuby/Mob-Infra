@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "207447146883",
+    "firebase_url": "https://mobileinfra-68cac.firebaseio.com",
+    "project_id": "mobileinfra-68cac",
+    "storage_bucket": "mobileinfra-68cac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207447146883:android:81253075bffe39d7",
+        "android_client_info": {
+          "package_name": "com.example.david.mobinfra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "207447146883-fq2301foc3rnjt4smbaoqvfdhao8qhod.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.david.mobinfra",
+            "certificate_hash": "8b3924b28ffa4aa38486062f4ee0dae3326dde9d"
+          }
+        },
+        {
+          "client_id": "207447146883-bf984t561iujijjlprsdjv7u41ai5vjn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoLo7xPTVVS6XuAUjApryE-TGDVAFfZvI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "207447146883-bf984t561iujijjlprsdjv7u41ai5vjn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
