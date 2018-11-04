@@ -14,8 +14,9 @@ import android.widget.TextView;
 public class MainActivity extends Activity implements SensorEventListener{
 
     private TextView xText, yText, zText;
-    private Sensor mySensor;
-    private SensorManager mSensorManager;
+    private String x, y, z;
+    //private Sensor mySensor;
+    //private SensorManager mSensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,18 +24,28 @@ public class MainActivity extends Activity implements SensorEventListener{
         setContentView(R.layout.activity_main);
 
         // Create our Sensor Manager
-        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
         // Accelerometer Sensor
-        mySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        Sensor mySensor = null;
+        if (mSensorManager != null) {
+            mySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
 
         // Register sensor Listener
-        mSensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if(mySensor != null){
+            mSensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
 
         // Assign TextView
-        xText = (TextView)findViewById(R.id.xText);
-        yText = (TextView)findViewById(R.id.yText);
-        zText = (TextView)findViewById(R.id.zText);
+        xText = findViewById(R.id.xText);
+        yText = findViewById(R.id.yText);
+        zText = findViewById(R.id.zText);
+        x = getString(R.string.x);
+        y = getString(R.string.y);
+        z = getString(R.string.z);
     }
 
     @Override
@@ -44,9 +55,9 @@ public class MainActivity extends Activity implements SensorEventListener{
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        xText.setText("X: " + event.values[0]);
-        yText.setText("Y: " + event.values[1]);
-        zText.setText("Z: " + event.values[2]);
+        xText.setText(x += event.values[0]);
+        yText.setText(y += event.values[1]);
+        zText.setText(z += event.values[2]);
     }
 
     @Override
