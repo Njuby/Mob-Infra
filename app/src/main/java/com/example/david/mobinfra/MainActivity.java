@@ -55,9 +55,9 @@ public class MainActivity extends Activity implements SensorEventListener{
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        xText.setText(x += event.values[0]);
-        yText.setText(y += event.values[1]);
-        zText.setText(z += event.values[2]);
+        xText.setText(x +  event.values[0]);
+        yText.setText(y +  event.values[1]);
+        zText.setText(z +  event.values[2]);
     }
 
     @Override
