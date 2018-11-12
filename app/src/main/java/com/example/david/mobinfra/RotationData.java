@@ -2,15 +2,15 @@ package com.example.david.mobinfra;
 
 public class RotationData {
 
-    public float x;
-    public float y;
-    public float z;
+    public double x;
+    public double y;
+    public double z;
 
     public RotationData(){
 
     }
 
-    public RotationData(float x, float y, float z){
+    public RotationData(double x, double y, double z){
         this.x = x;
         this.y = y;
         this.z = z;

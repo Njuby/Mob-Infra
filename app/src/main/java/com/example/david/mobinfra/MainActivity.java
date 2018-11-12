@@ -23,6 +23,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
     //region Fields
@@ -30,6 +37,129 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private DatabaseReference myRef;
     private int userID = 1;
+
+    private ArrayList<RotationData> rD = new ArrayList<RotationData>() {
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
+
+        @NonNull
+        @Override
+        public Iterator<RotationData> iterator() {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public Object[] toArray() {
+            return new Object[0];
+        }
+
+        @NonNull
+        @Override
+        public <T> T[] toArray(@NonNull T[] a) {
+            return null;
+        }
+
+        @Override
+        public boolean add(RotationData rotationData) {
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean containsAll(@NonNull Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(@NonNull Collection<? extends RotationData> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(int index, @NonNull Collection<? extends RotationData> c) {
+            return false;
+        }
+
+        @Override
+        public boolean removeAll(@NonNull Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean retainAll(@NonNull Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public RotationData get(int index) {
+            return null;
+        }
+
+        @Override
+        public RotationData set(int index, RotationData element) {
+            return null;
+        }
+
+        @Override
+        public void add(int index, RotationData element) {
+
+        }
+
+        @Override
+        public RotationData remove(int index) {
+            return null;
+        }
+
+        @Override
+        public int indexOf(Object o) {
+            return 0;
+        }
+
+        @Override
+        public int lastIndexOf(Object o) {
+            return 0;
+        }
+
+        @NonNull
+        @Override
+        public ListIterator<RotationData> listIterator() {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public ListIterator<RotationData> listIterator(int index) {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public List<RotationData> subList(int fromIndex, int toIndex) {
+            return null;
+        }
+    };
 
     //endregion
 
@@ -50,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Register sensor Listener
         if(mySensor != null){
-            mSensorManager.registerListener(this, mySensor, 50000000, 50000000);
+            mSensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
 
@@ -62,32 +192,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //myDatabaseReference
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
-        myRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        myRef.addValueEventListener(myListener);
 
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //Not in Use
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                //Not in Use
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //Not in Use
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                //Not in Use
-            }
-        });
 
     }
 
@@ -110,9 +216,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             RotationData rData = dataSnapshot.getValue(RotationData.class);
             if(rData != null) {
-                xText.setText(("x: " + Float.toString(rData.x)));
-                yText.setText(("y: " + Float.toString(rData.y)));
-                zText.setText(("z: " + Float.toString(rData.z)));
+                xText.setText(("x: " + Double.toString(rData.x)));
+                yText.setText(("y: " + Double.toString(rData.y)));
+                zText.setText(("z: " + Double.toString(rData.z)));
             }
         }
 
@@ -121,6 +227,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         }
     };
+
+
     //endregion
 
 
@@ -155,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return id;
     }
 
-    private void WriteNewRotation(String id, float x, float y, float z){
+    private void WriteNewRotation(String id, double x, double y, double z){
         RotationData rData = new RotationData(x, y, z);
         myRef.child("Data").child(id).setValue(rData);
     }
