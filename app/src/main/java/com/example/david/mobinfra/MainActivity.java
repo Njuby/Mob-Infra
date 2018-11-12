@@ -1,7 +1,10 @@
 package com.example.david.mobinfra;
 
+import android.graphics.Region;
 import android.os.Bundle;
 import android.os.Debug;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -13,18 +16,22 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
+    //region Fields
     private TextView xText, yText, zText;
-    private String x, y, z;
+
     private DatabaseReference myRef;
+    private int userID = 1;
 
-    //private Sensor mySensor;
-    //private SensorManager mSensorManager;
-
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +58,40 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         xText = findViewById(R.id.xText);
         yText = findViewById(R.id.yText);
         zText = findViewById(R.id.zText);
-        x = getString(R.string.x);
-        y = getString(R.string.y);
-        z = getString(R.string.z);
 
+        //myDatabaseReference
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-        //myRef.setValue("Hello, World!");
+            }
 
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                //Not in Use
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                //Not in Use
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                //Not in Use
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //Not in Use
+            }
+        });
 
     }
 
+    //region Accelerometer
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Not in use
@@ -70,11 +99,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        WriteNewRotation( event.values[0],  event.values[1],  event.values[2]);
-        //xText.setText(x +  event.values[0]);
-        //yText.setText(y +  event.values[1]);
-        //zText.setText(z +  event.values[2]);
+        //get and pass values(from Accelerometer
+        WriteNewRotation(GetID(), event.values[0],  event.values[1],  event.values[2]);
     }
+
+
+
+    ValueEventListener myListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            RotationData rData = dataSnapshot.getValue(RotationData.class);
+            if(rData != null) {
+                xText.setText(("x: " + Float.toString(rData.x)));
+                yText.setText(("y: " + Float.toString(rData.y)));
+                zText.setText(("z: " + Float.toString(rData.z)));
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+    //endregion
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,10 +146,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return super.onOptionsItemSelected(item);
     }
 
-    private void WriteNewRotation(float x, float y, float z){
+    //region Methods
 
-        myRef.child("Data").child("X").setValue(x);
-        myRef.child("Data").child("Y").setValue(y);
-        myRef.child("Data").child("Z").setValue(z);
+    //Increase Id counter
+    private String GetID() {
+        String id = String.valueOf(userID);
+        userID ++;
+        return id;
     }
+
+    private void WriteNewRotation(String id, float x, float y, float z){
+        RotationData rData = new RotationData(x, y, z);
+        myRef.child("Data").child(id).setValue(rData);
+    }
+    //endregion
 }
