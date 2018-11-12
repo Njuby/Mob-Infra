@@ -1,7 +1,9 @@
 package com.example.david.mobinfra;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.os.Debug;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,12 +13,18 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements SensorEventListener{
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
     private TextView xText, yText, zText;
     private String x, y, z;
+    private DatabaseReference myRef;
+
     //private Sensor mySensor;
     //private SensorManager mSensorManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +43,7 @@ public class MainActivity extends Activity implements SensorEventListener{
 
         // Register sensor Listener
         if(mySensor != null){
-            mSensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
+            mSensorManager.registerListener(this, mySensor, 50000000, 50000000);
         }
 
 
@@ -46,6 +54,13 @@ public class MainActivity extends Activity implements SensorEventListener{
         x = getString(R.string.x);
         y = getString(R.string.y);
         z = getString(R.string.z);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+
+        //myRef.setValue("Hello, World!");
+
+
     }
 
     @Override
@@ -55,9 +70,10 @@ public class MainActivity extends Activity implements SensorEventListener{
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        xText.setText(x +  event.values[0]);
-        yText.setText(y +  event.values[1]);
-        zText.setText(z +  event.values[2]);
+        WriteNewRotation( event.values[0],  event.values[1],  event.values[2]);
+        //xText.setText(x +  event.values[0]);
+        //yText.setText(y +  event.values[1]);
+        //zText.setText(z +  event.values[2]);
     }
 
     @Override
@@ -80,5 +96,12 @@ public class MainActivity extends Activity implements SensorEventListener{
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void WriteNewRotation(float x, float y, float z){
+
+        myRef.child("Data").child("X").setValue(x);
+        myRef.child("Data").child("Y").setValue(y);
+        myRef.child("Data").child("Z").setValue(z);
     }
 }
