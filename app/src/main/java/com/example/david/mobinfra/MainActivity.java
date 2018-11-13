@@ -1,5 +1,6 @@
 package com.example.david.mobinfra;
 
+import android.content.Intent;
 import android.graphics.Region;
 import android.os.Bundle;
 import android.os.Debug;
@@ -14,6 +15,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.view.View;
+import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -34,9 +38,132 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     //region Fields
     private TextView xText, yText, zText;
+    private Button compasButton;
 
-    private DatabaseReference myRef;
+    private DatabaseReference myRef, myDataRef;
     private int userID = 1;
+    private List<RotationData> my_rDataList = new List<RotationData>() {
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
+
+        @NonNull
+        @Override
+        public Iterator<RotationData> iterator() {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public Object[] toArray() {
+            return new Object[0];
+        }
+
+        @NonNull
+        @Override
+        public <T> T[] toArray(@NonNull T[] a) {
+            return null;
+        }
+
+        @Override
+        public boolean add(RotationData rotationData) {
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean containsAll(@NonNull Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(@NonNull Collection<? extends RotationData> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(int index, @NonNull Collection<? extends RotationData> c) {
+            return false;
+        }
+
+        @Override
+        public boolean removeAll(@NonNull Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean retainAll(@NonNull Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public RotationData get(int index) {
+            return null;
+        }
+
+        @Override
+        public RotationData set(int index, RotationData element) {
+            return null;
+        }
+
+        @Override
+        public void add(int index, RotationData element) {
+
+        }
+
+        @Override
+        public RotationData remove(int index) {
+            return null;
+        }
+
+        @Override
+        public int indexOf(Object o) {
+            return 0;
+        }
+
+        @Override
+        public int lastIndexOf(Object o) {
+            return 0;
+        }
+
+        @NonNull
+        @Override
+        public ListIterator<RotationData> listIterator() {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public ListIterator<RotationData> listIterator(int index) {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public List<RotationData> subList(int fromIndex, int toIndex) {
+            return null;
+        }
+    };
 
     private ArrayList<RotationData> rD = new ArrayList<RotationData>() {
         @Override
@@ -168,6 +295,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Get all layout content
+        // Assign TextView
+        xText = findViewById(R.id.xText);
+        yText = findViewById(R.id.yText);
+        zText = findViewById(R.id.zText);
+        compasButton = findViewById(R.id.compasButton);
+        compasButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPause();
+                startActivity(new Intent(MainActivity.this, ProximityActivity.class));
+            }
+        });
+
         // Create our Sensor Manager
         SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 
@@ -183,18 +324,46 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mSensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
-
-        // Assign TextView
-        xText = findViewById(R.id.xText);
-        yText = findViewById(R.id.yText);
-        zText = findViewById(R.id.zText);
-
         //myDatabaseReference
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
-        myRef.addValueEventListener(myListener);
+        /*myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //showData(dataSnapshot);
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    RotationData rData = ds.child("Data").getValue(RotationData.class);
+                    my_rDataList.add(rData);
+
+                    //.setX(ds.child("Data").getValue(RotationData.class).getX());
+                    //rData.setY(ds.child("Data").getValue(RotationData.class).getY());
+                    //rData.setZ(ds.child("Data").getValue(RotationData.class).getZ());
+
+                    xText.setText(("x: " + Float.toString(rData.getX())));
+                    yText.setText(("y: " + Float.toString(rData.getY())));
+                    zText.setText(("z: " + Float.toString(rData.getZ())));
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
 
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     //region Accelerometer
@@ -209,50 +378,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         WriteNewRotation(GetID(), event.values[0],  event.values[1],  event.values[2]);
     }
 
-
-
-    ValueEventListener myListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            RotationData rData = dataSnapshot.getValue(RotationData.class);
-            if(rData != null) {
-                xText.setText(("x: " + Double.toString(rData.x)));
-                yText.setText(("y: " + Double.toString(rData.y)));
-                zText.setText(("z: " + Double.toString(rData.z)));
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-    };
-
-
     //endregion
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     //region Methods
 
@@ -263,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return id;
     }
 
-    private void WriteNewRotation(String id, double x, double y, double z){
+    private void WriteNewRotation(String id, float x, float y, float z){
         RotationData rData = new RotationData(x, y, z);
         myRef.child("Data").child(id).setValue(rData);
     }
