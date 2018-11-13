@@ -2,15 +2,12 @@ package com.example.david.mobinfra;
 
 public class RotationData {
 
-    public float x;
-    public float y;
-    public float z;
+    private float x;
+    private float y;
+    private float z;
 
+    public RotationData(){
 
-    public RotationData(float x, float y, float z){
-        this.x = x;
-        this.y = y;
-        this.z = z;
     }
 
     public float getX() {
@@ -23,5 +20,17 @@ public class RotationData {
 
     public float getZ() {
         return z;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public void setZ(float z) {
+        this.z = z;
     }
 }

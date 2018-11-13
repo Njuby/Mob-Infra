@@ -1,26 +1,18 @@
 package com.example.david.mobinfra;
 
 import android.content.Intent;
-import android.graphics.Region;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.view.View;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,7 +24,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
@@ -44,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private DatabaseReference myRef, myDataRef;
     private int userID = 1;
+    private  String valueId;
     private List<RotationData> my_rDataList = new List<RotationData>() {
         @Override
         public int size() {
@@ -296,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        onPause();
+        //onPause();
         //Get all layout content
         // Assign TextView
         xText = findViewById(R.id.xText);
@@ -344,12 +336,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //showData(dataSnapshot);
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    RotationData rData = ds.child("Data").getValue(RotationData.class);
+                    RotationData rData = new RotationData();
+                    rData.setX(ds.child(valueId).getValue(RotationData.class).getX());
+                    rData.setY(ds.child(valueId).getValue(RotationData.class).getY());
+                    rData.setZ(ds.child(valueId).getValue(RotationData.class).getZ());
+                    //rData = ds.child("Data").getValue(RotationData.class);
                     my_rDataList.add(rData);
 
-                    //.setX(ds.child("Data").getValue(RotationData.class).getX());
-                    //rData.setY(ds.child("Data").getValue(RotationData.class).getY());
-                    //rData.setZ(ds.child("Data").getValue(RotationData.class).getZ());
+
 
                     xText.setText(("x: " + Float.toString(rData.getX())));
                     yText.setText(("y: " + Float.toString(rData.getY())));
@@ -389,19 +383,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         //get and pass values(from Accelerometer
-        WriteNewRotation(GetID(), event.values[0],  event.values[1],  event.values[2]);
+        WriteNewRotation(event.values[0],  event.values[1],  event.values[2]);
     }
 
     //Increase Id counter
     private String GetID() {
-        String id = String.valueOf(userID);
+        valueId = String.valueOf(userID);
         userID ++;
-        return id;
+        return valueId;
     }
 
-    private void WriteNewRotation(String id, float x, float y, float z){
-        RotationData rData = new RotationData(x, y, z);
-        myRef.child("Data").child(id).setValue(rData);
+    private void WriteNewRotation(float x, float y, float z){
+        RotationData rData = new RotationData();
+        rData.setX(x);
+        rData.setY(y);
+        rData.setZ(z);
+        GetID();
+        myRef.child("Data").setValue(rData);
     }
     //endregion
 
