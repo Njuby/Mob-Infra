@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -18,13 +19,20 @@ public class ProximityActivity extends AppCompatActivity implements SensorEventL
     private SensorManager mSensorManager;
     private Sensor mProximity;
 
+    //msg from proximity
     private TextView data;
     private Button button;
+
+    String near = "Near";
+    String far = "Far";
+
     //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Prevent sensor to start immediately
+        onPause();
         setContentView(R.layout.activity_proximity);
 
         data = findViewById(R.id.data);
@@ -59,14 +67,20 @@ public class ProximityActivity extends AppCompatActivity implements SensorEventL
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-            //As long as the sensor data is != 0 there is nothing near the sensor and we display near
-            if (event.values[0] == 0) {
-                String x = "near";
-                data.setText(x);
-            } else {
-                String y = "Away";
-                data.setText(y);
+        WindowManager.LayoutParams params = this.getWindow().getAttributes();
+        if(event.sensor.getType()==Sensor.TYPE_PROXIMITY){
+
+            if(event.values[0]==0){
+                params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                params.screenBrightness = 0;
+                getWindow().setAttributes(params);
+                data.setText(near);
+            }
+            else{
+                params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                params.screenBrightness = -1f;
+                getWindow().setAttributes(params);
+                data.setText(far);
             }
         }
     }

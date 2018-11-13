@@ -43,4 +43,22 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
         android:text="Go TO Proximity" />
+
+    <Button
+        android:id="@+id/buttonStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/buttonStart"
+        android:layout_marginEnd="74dp"
+        android:text="Stop" />
+
+    <Button
+        android:id="@+id/buttonStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/compasButton"
+        android:layout_marginTop="238dp"
+        android:text="Start" />
 </RelativeLayout>

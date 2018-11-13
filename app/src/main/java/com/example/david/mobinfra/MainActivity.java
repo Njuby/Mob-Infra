@@ -38,7 +38,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     //region Fields
     private TextView xText, yText, zText;
-    private Button compasButton;
+    private Button compasButton, buttonStart, buttonStop;
+
+    SensorManager mSensorManager;
+    Sensor mySensor;
 
     private DatabaseReference myRef, myDataRef;
     private int userID = 1;
@@ -301,6 +304,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         yText = findViewById(R.id.yText);
         zText = findViewById(R.id.zText);
         compasButton = findViewById(R.id.compasButton);
+        buttonStart = findViewById(R.id.buttonStart);
+        buttonStop = findViewById(R.id.buttonStop);
+
         compasButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -309,19 +315,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        // Create our Sensor Manager
-        SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        buttonStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onResume();
+            }
+        });
 
-        // Accelerometer Sensor
+        buttonStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPause();
 
-        Sensor mySensor = null;
+            }
+        });
+
+        // Create our Sensor
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mySensor = null;
         if (mSensorManager != null) {
             mySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        }
-
-        // Register sensor Listener
-        if(mySensor != null){
-            mSensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         //myDatabaseReference
@@ -358,12 +371,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-
+        mSensorManager.unregisterListener(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if(mySensor != null)
+            mSensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     //region Accelerometer
@@ -378,10 +393,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         WriteNewRotation(GetID(), event.values[0],  event.values[1],  event.values[2]);
     }
 
-    //endregion
-
-    //region Methods
-
     //Increase Id counter
     private String GetID() {
         String id = String.valueOf(userID);
@@ -394,4 +405,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         myRef.child("Data").child(id).setValue(rData);
     }
     //endregion
+
+
 }

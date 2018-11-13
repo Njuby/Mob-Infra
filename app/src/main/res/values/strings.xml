@@ -4,4 +4,6 @@
     <string name="x">X: </string>
     <string name="y">Y: </string>
     <string name="z">Z: </string>
+    <string name="Near">Near: </string>
+    <string name="Away">Away: </string>
 </resources>
