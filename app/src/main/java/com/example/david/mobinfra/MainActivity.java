@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     //region Fields
     private TextView xText, yText, zText;
-    private Button compasButton, buttonStart, buttonStop;
 
     SensorManager mSensorManager;
     Sensor mySensor;
@@ -297,15 +296,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        onPause();
         //Get all layout content
         // Assign TextView
         xText = findViewById(R.id.xText);
         yText = findViewById(R.id.yText);
         zText = findViewById(R.id.zText);
-        compasButton = findViewById(R.id.compasButton);
-        buttonStart = findViewById(R.id.buttonStart);
-        buttonStop = findViewById(R.id.buttonStop);
+        Button compasButton = findViewById(R.id.compasButton);
+        Button buttonStart = findViewById(R.id.buttonStart);
+        Button buttonStop = findViewById(R.id.buttonStop);
 
         compasButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -340,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //myDatabaseReference
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
-        /*myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //showData(dataSnapshot);
@@ -363,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });*/
+        });
 
 
     }

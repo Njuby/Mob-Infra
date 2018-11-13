@@ -31,8 +31,6 @@ public class ProximityActivity extends AppCompatActivity implements SensorEventL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Prevent sensor to start immediately
-        onPause();
         setContentView(R.layout.activity_proximity);
 
         data = findViewById(R.id.data);
