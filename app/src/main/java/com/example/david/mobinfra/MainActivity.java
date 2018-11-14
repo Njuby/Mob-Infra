@@ -288,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //onPause();
+
         //Get all layout content
         // Assign TextView
         xText = findViewById(R.id.xText);
@@ -334,13 +334,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //showData(dataSnapshot);
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     RotationData rData = new RotationData();
                     rData.setX(ds.child(valueId).getValue(RotationData.class).getX());
                     rData.setY(ds.child(valueId).getValue(RotationData.class).getY());
                     rData.setZ(ds.child(valueId).getValue(RotationData.class).getZ());
-                    //rData = ds.child("Data").getValue(RotationData.class);
+
                     my_rDataList.add(rData);
 
 
@@ -350,6 +349,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     zText.setText(("z: " + Float.toString(rData.getZ())));
 
                 }
+
             }
 
             @Override
@@ -357,8 +357,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             }
         });
-
-
     }
 
     @Override
@@ -399,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         rData.setY(y);
         rData.setZ(z);
         GetID();
-        myRef.child("Data").setValue(rData);
+        myRef.child("Data").child(valueId).setValue(rData);
     }
     //endregion
 
