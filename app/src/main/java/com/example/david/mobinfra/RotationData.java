@@ -1,5 +1,6 @@
 package com.example.david.mobinfra;
 
+
 public class RotationData {
 
     private float x;
@@ -9,6 +10,7 @@ public class RotationData {
     public RotationData(){
 
     }
+
 
     public float getX() {
         return x;

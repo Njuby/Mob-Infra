@@ -36,128 +36,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private DatabaseReference myRef, myDataRef;
     private int userID = 1;
     private  String valueId;
-    private List<RotationData> my_rDataList = new List<RotationData>() {
-        @Override
-        public int size() {
-            return 0;
-        }
 
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            return false;
-        }
-
-        @NonNull
-        @Override
-        public Iterator<RotationData> iterator() {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public Object[] toArray() {
-            return new Object[0];
-        }
-
-        @NonNull
-        @Override
-        public <T> T[] toArray(@NonNull T[] a) {
-            return null;
-        }
-
-        @Override
-        public boolean add(RotationData rotationData) {
-            return false;
-        }
-
-        @Override
-        public boolean remove(Object o) {
-            return false;
-        }
-
-        @Override
-        public boolean containsAll(@NonNull Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(@NonNull Collection<? extends RotationData> c) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(int index, @NonNull Collection<? extends RotationData> c) {
-            return false;
-        }
-
-        @Override
-        public boolean removeAll(@NonNull Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean retainAll(@NonNull Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
-        }
-
-        @Override
-        public RotationData get(int index) {
-            return null;
-        }
-
-        @Override
-        public RotationData set(int index, RotationData element) {
-            return null;
-        }
-
-        @Override
-        public void add(int index, RotationData element) {
-
-        }
-
-        @Override
-        public RotationData remove(int index) {
-            return null;
-        }
-
-        @Override
-        public int indexOf(Object o) {
-            return 0;
-        }
-
-        @Override
-        public int lastIndexOf(Object o) {
-            return 0;
-        }
-
-        @NonNull
-        @Override
-        public ListIterator<RotationData> listIterator() {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public ListIterator<RotationData> listIterator(int index) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public List<RotationData> subList(int fromIndex, int toIndex) {
-            return null;
-        }
-    };
+    private Boolean enableListener = false;
 
     private ArrayList<RotationData> rD = new ArrayList<RotationData>() {
         @Override
@@ -294,15 +174,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         xText = findViewById(R.id.xText);
         yText = findViewById(R.id.yText);
         zText = findViewById(R.id.zText);
-        Button compasButton = findViewById(R.id.compasButton);
+        Button proxiButton = findViewById(R.id.compasButton);
         Button buttonStart = findViewById(R.id.buttonStart);
         Button buttonStop = findViewById(R.id.buttonStop);
         Button buttonReset = findViewById(R.id.buttonReset);
 
-        compasButton.setOnClickListener(new View.OnClickListener() {
+        proxiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onPause();
+                enableListener = false;
                 startActivity(new Intent(MainActivity.this, ProximityActivity.class));
             }
         });
@@ -310,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enableListener = true;
                 onResume();
             }
         });
@@ -318,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
                 onPause();
-
+                enableListener = false;
             }
         });
 
@@ -326,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
                 onPause();
+                enableListener = false;
                 myRef.child("Data").removeValue();
             }
         });
@@ -348,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     rData.setY(ds.child(valueId).getValue(RotationData.class).getY());
                     rData.setZ(ds.child(valueId).getValue(RotationData.class).getZ());
 
-                    my_rDataList.add(rData);
+
 
 
 
@@ -376,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        if(mySensor != null)
+        if(mySensor != null && enableListener)
             mSensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
