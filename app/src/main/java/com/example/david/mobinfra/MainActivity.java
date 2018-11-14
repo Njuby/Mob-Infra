@@ -297,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Button compasButton = findViewById(R.id.compasButton);
         Button buttonStart = findViewById(R.id.buttonStart);
         Button buttonStop = findViewById(R.id.buttonStop);
+        Button buttonReset = findViewById(R.id.buttonReset);
 
         compasButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -321,6 +322,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPause();
+                myRef.child("Data").removeValue();
+            }
+        });
         // Create our Sensor
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mySensor = null;
