@@ -42,7 +42,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
-        android:text="Go TO Proximity" />
+        android:text="@string/go_to_proximity" />
 
     <Button
         android:id="@+id/buttonReset"
@@ -51,7 +51,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="215dp"
-        android:text="Reset" />
+        android:text="@string/reset" />
 
     <Button
         android:id="@+id/buttonStop"
@@ -60,7 +60,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/buttonStart"
         android:layout_marginEnd="74dp"
-        android:text="Stop" />
+        android:text="@string/stop" />
 
     <Button
         android:id="@+id/buttonStart"
@@ -69,5 +69,5 @@
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/compasButton"
         android:layout_marginTop="238dp"
-        android:text="Start" />
+        android:text="@string/start" />
 </RelativeLayout>

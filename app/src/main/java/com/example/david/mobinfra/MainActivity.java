@@ -20,11 +20,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
+/**
+ * This class holds a accelorametor sensor
+ * In this class we can start retrieving data from the sensor andd,
+ * Writing it do a database.
+ * In addition we can read and delete all items.
+ * **/
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
     //region Fields
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Sensor mySensor;
 
     private DatabaseReference myRef, myDataRef;
-    private int userID = 1;
+    private int id = 1;
     private  String valueId;
     private List<RotationData> my_rDataList = new ArrayList<>();
 
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
                 enableListener = false;
-                userID = 1;
+                id = 1;
                 ResetValuesOnScreen();
                 onPause();
                 myRef.child("Data").removeValue();
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     //prevents OnDataChange for asking for non existend data. So we call for the previous data-change
-                    int x = userID - 1;
+                    int x = id - 1;
                     //value cannot be null cause data starts at 1
                     //Only retrieve data when the listener is running. To avoid data-requests after resetting the database.
                     if(x > 0 && enableListener) {
@@ -133,17 +136,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
     }
 
-    private void ResetValuesOnScreen() {
-        xText.setText(R.string.x);
-        yText.setText(R.string.y);
-        zText.setText(R.string.z);
-    }
+
 
     @Override
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
     }
+
 
     @Override
     protected void onResume() {
@@ -152,25 +152,41 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mSensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+
     //region Accelerometer
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Not in use
     }
 
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         //get and pass values(from Accelerometer
         WriteNewRotation(event.values[0],  event.values[1],  event.values[2]);
     }
+    //endregion
 
-    //Increase Id counter
+
+    //region Methods
+    /**
+     * Converts id to string
+     * @return id in sting
+     */
     private String GetID() {
-        valueId = String.valueOf(userID);
-        userID ++;
+        valueId = String.valueOf(id);
+        id++;
         return valueId;
     }
 
+
+    /**
+     * Write data to the firebase database
+     * Uses sensor data
+     * @param x accelerometer [0] = x value
+     * @param y accelerometer [1] = y value
+     * @param z accelerometer [2] = z value
+     */
     private void WriteNewRotation(float x, float y, float z){
         RotationData rData = new RotationData();
         rData.setX(x);
@@ -178,6 +194,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         rData.setZ(z);
         GetID();
         myRef.child("Data").child(valueId).setValue(rData);
+    }
+
+
+    /**
+     * set x,y,z, values on the screen to null.
+     */
+    private void ResetValuesOnScreen() {
+        xText.setText(R.string.x);
+        yText.setText(R.string.y);
+        zText.setText(R.string.z);
     }
     //endregion
 

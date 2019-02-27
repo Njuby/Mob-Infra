@@ -4,4 +4,12 @@
     <string name="x">X: </string>
     <string name="y">Y: </string>
     <string name="z">Z: </string>
+    <string name="nearText">near</string>
+    <string name="farText">far</string>
+    <string name="go_to_proximity">Go TO Proximity</string>
+    <string name="reset">Reset</string>
+    <string name="stop">Stop</string>
+    <string name="start">Start</string>
+    <string name="status">Status:</string>
+    <string name="go_to_accelerometer">GO TO accelerometer</string>
 </resources>

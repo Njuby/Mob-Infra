@@ -13,6 +13,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+
+/**this class holds a proximity sensor.
+The sensor will detect if something moves close to the screen,
+And adjusts it brightness accordingly.**/
 public class ProximityActivity extends AppCompatActivity implements SensorEventListener{
 
     //region Fields
@@ -20,11 +24,8 @@ public class ProximityActivity extends AppCompatActivity implements SensorEventL
     private Sensor mProximity;
 
     //msg from proximity
-    private TextView data;
+    private TextView status;
     private Button button;
-
-    String near = "Near";
-    String far = "Far";
 
     //endregion
 
@@ -33,7 +34,7 @@ public class ProximityActivity extends AppCompatActivity implements SensorEventL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_proximity);
 
-        data = findViewById(R.id.data);
+        status = findViewById(R.id.status);
         button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +57,7 @@ public class ProximityActivity extends AppCompatActivity implements SensorEventL
         mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -63,25 +65,25 @@ public class ProximityActivity extends AppCompatActivity implements SensorEventL
         mSensorManager.unregisterListener(this);
     }
 
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         WindowManager.LayoutParams params = this.getWindow().getAttributes();
         if(event.sensor.getType()==Sensor.TYPE_PROXIMITY){
 
             if(event.values[0]==0){
-                params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                 params.screenBrightness = 0;
                 getWindow().setAttributes(params);
-                data.setText(near);
+                status.setText(R.string.nearText);
             }
             else{
-                params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                 params.screenBrightness = -1f;
                 getWindow().setAttributes(params);
-                data.setText(far);
+                status.setText(R.string.farText);
             }
         }
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
