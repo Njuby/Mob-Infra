@@ -36,252 +36,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private DatabaseReference myRef, myDataRef;
     private int userID = 1;
     private  String valueId;
-    private List<RotationData> my_rDataList = new List<RotationData>() {
-        @Override
-        public int size() {
-            return 0;
-        }
+    private List<RotationData> my_rDataList = new ArrayList<>();
 
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            return false;
-        }
-
-        @NonNull
-        @Override
-        public Iterator<RotationData> iterator() {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public Object[] toArray() {
-            return new Object[0];
-        }
-
-        @NonNull
-        @Override
-        public <T> T[] toArray(@NonNull T[] a) {
-            return null;
-        }
-
-        @Override
-        public boolean add(RotationData rotationData) {
-            return false;
-        }
-
-        @Override
-        public boolean remove(Object o) {
-            return false;
-        }
-
-        @Override
-        public boolean containsAll(@NonNull Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(@NonNull Collection<? extends RotationData> c) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(int index, @NonNull Collection<? extends RotationData> c) {
-            return false;
-        }
-
-        @Override
-        public boolean removeAll(@NonNull Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean retainAll(@NonNull Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
-        }
-
-        @Override
-        public RotationData get(int index) {
-            return null;
-        }
-
-        @Override
-        public RotationData set(int index, RotationData element) {
-            return null;
-        }
-
-        @Override
-        public void add(int index, RotationData element) {
-
-        }
-
-        @Override
-        public RotationData remove(int index) {
-            return null;
-        }
-
-        @Override
-        public int indexOf(Object o) {
-            return 0;
-        }
-
-        @Override
-        public int lastIndexOf(Object o) {
-            return 0;
-        }
-
-        @NonNull
-        @Override
-        public ListIterator<RotationData> listIterator() {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public ListIterator<RotationData> listIterator(int index) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public List<RotationData> subList(int fromIndex, int toIndex) {
-            return null;
-        }
-    };
-
-    private ArrayList<RotationData> rD = new ArrayList<RotationData>() {
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            return false;
-        }
-
-        @NonNull
-        @Override
-        public Iterator<RotationData> iterator() {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public Object[] toArray() {
-            return new Object[0];
-        }
-
-        @NonNull
-        @Override
-        public <T> T[] toArray(@NonNull T[] a) {
-            return null;
-        }
-
-        @Override
-        public boolean add(RotationData rotationData) {
-            return false;
-        }
-
-        @Override
-        public boolean remove(Object o) {
-            return false;
-        }
-
-        @Override
-        public boolean containsAll(@NonNull Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(@NonNull Collection<? extends RotationData> c) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(int index, @NonNull Collection<? extends RotationData> c) {
-            return false;
-        }
-
-        @Override
-        public boolean removeAll(@NonNull Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean retainAll(@NonNull Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
-        }
-
-        @Override
-        public RotationData get(int index) {
-            return null;
-        }
-
-        @Override
-        public RotationData set(int index, RotationData element) {
-            return null;
-        }
-
-        @Override
-        public void add(int index, RotationData element) {
-
-        }
-
-        @Override
-        public RotationData remove(int index) {
-            return null;
-        }
-
-        @Override
-        public int indexOf(Object o) {
-            return 0;
-        }
-
-        @Override
-        public int lastIndexOf(Object o) {
-            return 0;
-        }
-
-        @NonNull
-        @Override
-        public ListIterator<RotationData> listIterator() {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public ListIterator<RotationData> listIterator(int index) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public List<RotationData> subList(int fromIndex, int toIndex) {
-            return null;
-        }
-    };
-
+    private Boolean enableListener = false;
     //endregion
 
     @Override
@@ -302,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         compasButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enableListener = false;
                 onPause();
                 startActivity(new Intent(MainActivity.this, ProximityActivity.class));
             }
@@ -310,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enableListener = true;
                 onResume();
             }
         });
@@ -317,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enableListener = false;
                 onPause();
 
             }
@@ -325,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enableListener = false;
+                userID = 1;
+                ResetValuesOnScreen();
                 onPause();
                 myRef.child("Data").removeValue();
             }
@@ -343,19 +106,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    RotationData rData = new RotationData();
-                    rData.setX(ds.child(valueId).getValue(RotationData.class).getX());
-                    rData.setY(ds.child(valueId).getValue(RotationData.class).getY());
-                    rData.setZ(ds.child(valueId).getValue(RotationData.class).getZ());
+                    //prevents OnDataChange for asking for non existend data. So we call for the previous data-change
+                    int x = userID - 1;
+                    //value cannot be null cause data starts at 1
+                    //Only retrieve data when the listener is running. To avoid data-requests after resetting the database.
+                    if(x > 0 && enableListener) {
+                        RotationData rData = new RotationData();
+                        rData.setX(ds.child(String.valueOf(x)).getValue(RotationData.class).getX());
+                        rData.setY(ds.child(String.valueOf(x)).getValue(RotationData.class).getY());
+                        rData.setZ(ds.child(String.valueOf(x)).getValue(RotationData.class).getZ());
 
-                    my_rDataList.add(rData);
+                        my_rDataList.add(rData);
 
-
-
-                    xText.setText(("x: " + Float.toString(rData.getX())));
-                    yText.setText(("y: " + Float.toString(rData.getY())));
-                    zText.setText(("z: " + Float.toString(rData.getZ())));
-
+                        xText.setText(("x: " + Float.toString(rData.getX())));
+                        yText.setText(("y: " + Float.toString(rData.getY())));
+                        zText.setText(("z: " + Float.toString(rData.getZ())));
+                    }
                 }
 
             }
@@ -367,6 +133,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
     }
 
+    private void ResetValuesOnScreen() {
+        xText.setText(R.string.x);
+        yText.setText(R.string.y);
+        zText.setText(R.string.z);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -376,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        if(mySensor != null)
+        if(mySensor != null && enableListener)
             mSensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
